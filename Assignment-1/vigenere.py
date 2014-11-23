@@ -1,17 +1,38 @@
-occurences = {}
+#!/usr/bin/env python3
+import binascii
 
-ciphered_text = "This is a super text that I should take now"
+max_key_length = 14
+CHARACTERS_LENGTH = 256
+FILENAME = 'ciphertext.txt'
 
-for N in range(1,14):
-    for i in range(0, len(ciphered_text)):
-        if N == 0 or i % N == 0:
-            l = ciphered_text[i]
-            if occurences.get(l):
-                occurences[l] += 1
-            else:
-                occurences[l] = 1
+with open(FILENAME) as file:
+    ciphertext = file.read()
+
+ciphertext = binascii.unhexlify(ciphertext)
+
+# occurences is an array of length 256
+# each position is the number of occurences of byte i
+def init(occurences):
+    occurences.clear()
+    for i in range(CHARACTERS_LENGTH):
+        occurences.append(0)
+
+def display(occurences):
+    for i in range(CHARACTERS_LENGTH):
+        print(str(i) + ':' + str(occurences[i]))
+
+def compute_distribution(occurences):
     distribution = 0
-    for l in occurences:
-        distribution += (occurences[l] * occurences[l]) / (26*26)
+    for i in range(len(occurences)):
+        distribution += (occurences[i] / CHARACTERS_LENGTH) ** 2
+    return distribution
+
+occurences = []
+for N in range(1, max_key_length):
+    init(occurences)
+    for i in range(len(ciphertext)):
+        if i % N == 0:
+            l = ciphertext[i]
+            occurences[l] += 1
+    distribution = compute_distribution(occurences) * N
     print('N = ' + str(N) + ': ' + str(distribution))
-    occurences = {}
