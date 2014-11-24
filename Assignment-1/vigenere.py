@@ -44,4 +44,15 @@ def find_key_length(occurences):
         print('N = %d: %f' % (N, distribution))
     return key_length
 
-print('Key length = %d' % find_key_length(occurences))
+key_length = find_key_length(occurences)
+print('Key length = %d' % key_length)
+
+def find_bytes(N):
+    stream = ciphertext[0:len(ciphertext):N]
+    for b in range(1, CHARACTERS_LENGTH + 1):
+        streamb = []
+        for char in stream:
+            streamb.append(char ^ b)
+        print(streamb)
+# TODO: if one character in streamb is outside the 32 => 127 range, then we can exclude b
+find_bytes(key_length)
