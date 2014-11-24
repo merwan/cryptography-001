@@ -19,7 +19,7 @@ def init(occurences):
 
 def display(occurences):
     for i in range(CHARACTERS_LENGTH):
-        print(str(i) + ':' + str(occurences[i]))
+        print('Char %d : %d' % (i, occurences[i]))
 
 def compute_distribution(occurences):
     distribution = 0
@@ -28,11 +28,20 @@ def compute_distribution(occurences):
     return distribution
 
 occurences = []
-for N in range(1, max_key_length):
-    init(occurences)
-    for i in range(len(ciphertext)):
-        if i % N == 0:
-            l = ciphertext[i]
-            occurences[l] += 1
-    distribution = compute_distribution(occurences) * N
-    print('N = ' + str(N) + ': ' + str(distribution))
+
+def find_key_length(occurences):
+    max_distribution = 0
+    for N in range(2, max_key_length):
+        init(occurences)
+        for i in range(len(ciphertext)):
+            if i % N == 0:
+                l = ciphertext[i]
+                occurences[l] += 1
+        distribution = compute_distribution(occurences) * N
+        if distribution > max_distribution:
+            max_distribution = distribution
+            key_length = N
+        print('N = %d: %f' % (N, distribution))
+    return key_length
+
+print('Key length = %d' % find_key_length(occurences))
